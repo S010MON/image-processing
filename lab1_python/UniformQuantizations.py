@@ -1,6 +1,7 @@
 import cv2, math
 import numpy as np
 
+
 # np.digitize does not give expected output for q=2 thus a simple manual method is used for this case
 def uniform_quantization(GrayImage, q):
     if q == 2:
@@ -15,11 +16,13 @@ def uniform_quantization(GrayImage, q):
         QImage = (np.vectorize(bins.tolist().__getitem__)(QImage-1).astype(int))
         return QImage.astype(np.uint8)
 
+
 # A quick MSE method
 def mse(imageA, imageB):
     err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
     err /= float(imageA.shape[0] * imageA.shape[1])
     return err
+
 
 Image = cv2.imread('pizza2.jpg')
 

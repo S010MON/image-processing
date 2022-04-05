@@ -23,24 +23,23 @@ inv_rot = np.linalg.inv(rotation_matrix)
 inv_trans = np.linalg.inv(translation_matrix)
 inv_rot_trans = np.linalg.inv(translate_rotate_matrix)
 
-# Padding used to display the image correctly, and to ensure the new image includes all of the old image
+# Padding used to display the image correctly, and to ensure the new image includes all the old images
 m, n, _ = image.shape
-max_values=[]
-max_values.append(np.matmul(rotation_matrix, (m - int((m+1)/2), n - int((n+1)/2), 1)))
-max_values.append(np.matmul(rotation_matrix, (0- int((m+1)/2), 0 - int((n+1)/2), 1)))
-max_values.append(np.matmul(rotation_matrix, (m- int((m+1)/2), 0 - int((n+1)/2), 1)))
-max_values.append(np.matmul(rotation_matrix, (0- int((m+1)/2), n - int((n+1)/2), 1)))
+max_values = [np.matmul(rotation_matrix, (m - int((m + 1) / 2), n - int((n + 1) / 2), 1)),
+              np.matmul(rotation_matrix, (0 - int((m + 1) / 2), 0 - int((n + 1) / 2), 1)),
+              np.matmul(rotation_matrix, (m - int((m + 1) / 2), 0 - int((n + 1) / 2), 1)),
+              np.matmul(rotation_matrix, (0 - int((m + 1) / 2), n - int((n + 1) / 2), 1))]
+
 max_val = np.max(max_values, 0)
 min_val = np.min(max_values, 0)
 new_image = np.full((math.ceil(max_val[0]-min_val[0]),math.ceil(max_val[1]-min_val[1]) , 3), 255).astype(np.uint8)
 new_image2 = np.full((math.ceil(max_val[0]-min_val[0]), math.ceil(max_val[1]-min_val[1]), 3), 255).astype(np.uint8)
 
 m, n, _ = new_image.shape
-new_max_values=[]
-new_max_values.append(np.matmul(inv_rot, max_values[0]))
-new_max_values.append(np.matmul(inv_rot, max_values[1]))
-new_max_values.append(np.matmul(inv_rot, max_values[2]))
-new_max_values.append(np.matmul(inv_rot, max_values[3]))
+new_max_values = [np.matmul(inv_rot, max_values[0]),
+                  np.matmul(inv_rot, max_values[1]),
+                  np.matmul(inv_rot, max_values[2]),
+                  np.matmul(inv_rot, max_values[3])]
 max_val = np.max(new_max_values, 0)
 min_val = np.min(new_max_values, 0)
 min_x = min_val[0] + int((m + 1) / 2)
@@ -58,15 +57,15 @@ for x in range(new_image.shape[0]):
                 (n + 1) / 2) - min_y > 0:
             new_image[x][y] = image[int(values[0] + int((m + 1) / 2) - min_x)][int(values[1] + int((n + 1) / 2) - min_y)]
 
-#Performs rotation and translation simultaneously (Uses nearest neighbor)
+# Performs rotation and translation simultaneously (Uses nearest neighbor)
 # Here inverse mapping is used, so the values in the original image are found by multiplying
 # with the inverse geometric transformation inv_rot_trans matrix found above
 for x in range(new_image2.shape[0]):
     for y in range(new_image2.shape[1]):
         values = np.array([x - int((m + 1) / 2), y - int((n + 1) / 2), 1])
         values = np.matmul(inv_rot_trans, values)
-        if image.shape[0] > values[0] + int((m + 1) / 2) - min_x > 0 and image.shape[1] > values[1] + int(
-                (n + 1) / 2) - min_y > 0:
+        if image.shape[0] > values[0] + int((m + 1) / 2) - min_x > 0 \
+                and image.shape[1] > values[1] + int((n + 1) / 2) - min_y > 0:
             new_image2[x][y] = image[int(values[0] + int((m + 1) / 2) - min_x)][
                 int(values[1] + int((n + 1) / 2) - min_y)]
 
