@@ -20,27 +20,31 @@ def rgb2hsv(img_rgb):
 
 
 def rgb_to_hsv(r: int, g: int, b: int) -> tuple:
+    # source: https://docs.opencv.org/4.x/de/d25/imgproc_color_conversions.html#color_convert_rgb_hsv
+
     r = r / 255
     g = g / 255
     b = b / 255
 
     v = max(r, g, b)
-    c = v - min(r, g, b)
-    if v == 0:
-        s = 0
-    else:
+    c = (v - min(r, g, b))
+
+    if v != 0:
         s = c / v
-
-    if c == 0:
-        h = 0.0
-    elif v == r:
-        h = 60 * (0 + (g - b) / c)
-    elif v == g:
-        h = 60 * (2 + (b - r) / c)
     else:
-        h = 60 * (4 + (r - g) / c)
+        s = 0
 
-    h = (h + 360) % 360
+    if r == g == b:
+        h = 0
+    elif v == r:
+        h = (60 * (g - b)) / c
+    elif v == g:
+        h = 120 + 60 * (b - r) / c
+    elif v == b:
+        h = 240 + 60 * (r - g) / c
+
+    if h < 0:
+        h = h + 360
 
     return h, s, v
 
