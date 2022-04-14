@@ -1,5 +1,5 @@
 import unittest
-from proj_1.proj_1 import rgb_to_hsv
+from ex_1.proj_1 import rgb_to_hsv
 
 
 class MyTestCase(unittest.TestCase):
