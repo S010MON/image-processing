@@ -37,16 +37,16 @@ def rgb_to_hsv(r: int, g: int, b: int) -> tuple:
     if r == g == b:
         h = 0
     elif v == r:
-        h = (60 * (g - b)) / c
+        h = 60 * ((g - b) / c)
     elif v == g:
-        h = 120 + 60 * (b - r) / c
+        h = 120 + (60 * (b - r) / c)
     elif v == b:
-        h = 240 + 60 * (r - g) / c
+        h = 240 + (60 * (r - g) / c)
 
     if h < 0:
         h = h + 360
 
-    return h, s, v
+    return h/255/2, s, v
 
 
 def rgb2hsi(img_rgb):
@@ -72,42 +72,41 @@ def rgb_to_hsi(r: int, g: int, b: int) -> tuple:
     b = b / 255
 
     v = max(r, g, b)
-    c = v - min(r, g, b)
-    if v == 0:
+    c = (v - min(r, g, b))
+
+    if v != 0:
+        s = c / v
+    else:
         s = 0
-    else:
-        s = 1 - (min(r, g, b) / ((r + b + g)/3))
 
-    if c == 0:
-        h = 0.0
+    if r == g == b:
+        h = 0
     elif v == r:
-        h = 60 * (0 + (g - b) / c)
+        h = 60 * ((g - b) / c)
     elif v == g:
-        h = 60 * (2 + (b - r) / c)
-    else:
-        h = 60 * (4 + (r - g) / c)
+        h = 120 + (60 * (b - r) / c)
+    elif v == b:
+        h = 240 + (60 * (r - g) / c)
 
-    h = (h + 360) % 360
+    if h < 0:
+        h = h + 360
 
-    return h, s, v
+    i = (r + b + g) / 3
+
+    return h/255/2, s, i
 
 
 if __name__ == '__main__':
-    img1_rgb = cv2.imread('images/falafel.png')
-    img1_hsv = rgb2hsv(img1_rgb)
-    img1_hsi = rgb2hsi(img1_rgb)
+    img_rgb = cv2.imread('images/falafel.png')
+    img_hsv_act = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2HSV)
+    img_hsv_own = rgb2hsv(img_rgb)
+    img_hsi_own = rgb2hsi(img_rgb)
 
-    cv2.imshow('rgb1', img1_rgb)
-    cv2.imshow('hsv1', img1_hsv)
-    cv2.imshow('hsi1', img1_hsi)
+    cv2.imshow('rgb', img_rgb)
+    cv2.imshow('hsv act', img_hsv_act)
+    cv2.imshow('hsv own', img_hsv_own)
+    cv2.imshow('hsi own', img_hsi_own)
 
-    img2_rgb = cv2.imread('images/beach.png')
-    img2_hsv = rgb2hsv(img2_rgb)
-    img2_hsi = rgb2hsi(img2_rgb)
-
-    cv2.imshow('rgb2', img2_rgb)
-    cv2.imshow('hsv2', img2_hsv)
-    cv2.imshow('hsi2', img2_hsi)
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
