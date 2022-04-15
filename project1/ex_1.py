@@ -107,6 +107,5 @@ if __name__ == '__main__':
     cv2.imshow('hsv own', img_hsv_own)
     cv2.imshow('hsi own', img_hsi_own)
 
-
     cv2.waitKey(0)
     cv2.destroyAllWindows()
