@@ -94,18 +94,3 @@ def rgb_to_hsi(r: int, g: int, b: int) -> tuple:
     i = (r + b + g) / 3
 
     return h/255/2, s, i
-
-
-if __name__ == '__main__':
-    img_rgb = cv2.imread('images/falafel.png')
-    img_hsv_act = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2HSV)
-    img_hsv_own = rgb2hsv(img_rgb)
-    img_hsi_own = rgb2hsi(img_rgb)
-
-    cv2.imshow('rgb', img_rgb)
-    cv2.imshow('hsv act', img_hsv_act)
-    cv2.imshow('hsv own', img_hsv_own)
-    cv2.imshow('hsi own', img_hsi_own)
-
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
