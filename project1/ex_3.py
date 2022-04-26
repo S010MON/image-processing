@@ -11,6 +11,21 @@ def polar(coordinate: tuple) -> tuple:
     return r, theta
 
 
+def polar_img(img_c):
+    w, h, d = np.shape(img_c)
+    radius = 360
+    img_p = np.zeros((radius, 360, d))
+
+    for x in range(len(img_c)):
+        for y in range(len(img_c[x])):
+            r, theta = polar((x, y))
+            r = int(r)
+            theta = int(math.degrees(theta))
+            img_p[r, theta, :] = img_c[x, y, :]
+
+    return img_p
+
+
 def carteisan(coordinate: tuple) -> tuple:
     r = coordinate[0]
     theta = coordinate[1]
