@@ -1,44 +1,14 @@
-import math
 import cv2
 import numpy as np
 
 
-def polar(coordinate: tuple) -> tuple:
-    x = coordinate[0]
-    y = coordinate[1]
-    r = math.sqrt(x**2 + y**2)
-    theta = math.atan2(y, x)
-    return r, theta
+def polar(img):
+    value = np.sqrt(((img.shape[0] / 2.0) ** 2.0) + ((img.shape[1] / 2.0) ** 2.0))
+    polar_image = cv2.linearPolar(img, (img.shape[0] / 2, img.shape[1] / 2), value, cv2.WARP_FILL_OUTLIERS)
+    return polar_image.astype(np.uint8)
 
 
-def polar_img(img_c):
-    w, h, d = np.shape(img_c)
-    radius = 360
-    img_p = np.zeros((radius, 360, d))
-
-    for x in range(len(img_c)):
-        for y in range(len(img_c[x])):
-            r, theta = polar((x, y))
-            r = int(r)
-            theta = int(math.degrees(theta))
-            img_p[r, theta, :] = img_c[x, y, :]
-
-    return img_p
-
-
-def carteisan(coordinate: tuple) -> tuple:
-    r = coordinate[0]
-    theta = coordinate[1]
-    x = r * math.cos(theta)
-    y = r * math.sin(theta)
-    return x, y
-
-
-def pad_img(img):
-    return np.pad(img, ((10, 10), (10, 10), (0, 0)), constant_values=True)
-
-
-def cartoonify_2(img):
+def cartoonify(img):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     ret, thresh = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -49,11 +19,7 @@ def cartoonify_2(img):
 if __name__ == '__main__':
     img = cv2.imread('images/door_small.png')
     cv2.imshow('Cartesian', img)
-
-    value = np.sqrt(((img.shape[0] / 2.0) ** 2.0) + ((img.shape[1] / 2.0) ** 2.0))
-    polar_image = cv2.linearPolar(img, (img.shape[0] / 2, img.shape[1] / 2), value, cv2.WARP_FILL_OUTLIERS)
-    polar_image = polar_image.astype(np.uint8)
-    cv2.imshow("Polar", polar_image)
+    cv2.imshow('Polar', polar(img))
 
     """
     The canny edge detector is the edge detection operation that operates on multi-stage algorithms to detect a wide 
@@ -64,7 +30,7 @@ if __name__ == '__main__':
 
     img_modifed = cv2.Canny(img, 100, 200)
     cv2.imshow("Cartoonify", img_modifed)
-    cv2.imshow("Cartoonify 2", cartoonify_2(img))
+    cv2.imshow("Cartoonify 2", cartoonify(img))
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
