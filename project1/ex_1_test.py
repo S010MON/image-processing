@@ -1,6 +1,5 @@
 import unittest
-import cv2
-from ex_1 import rgb_to_hsv, rgb2hsv
+from functions import rgb_to_hsv
 
 
 class MyTestCase(unittest.TestCase):
